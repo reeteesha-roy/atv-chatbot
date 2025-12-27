@@ -6,26 +6,61 @@ function addMessage(text, className) {
     chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
-
 function sendMessage() {
-    const input = document.getElementById("userInput");
-    const userText = input.value.trim();
+  const input = document.getElementById("user-input");
+  const message = input.value.trim();
+  if (!message) return;
 
-    if (!userText) return;
+  const chatBox = document.getElementById("chat-box");
 
-    addMessage(userText, "user-message");
-    input.value = "";
+  // User message
+  const userDiv = document.createElement("div");
+  userDiv.className = "user-message";
+  userDiv.innerText = message;
+  chatBox.appendChild(userDiv);
 
-    fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userText })
-    })
+  input.value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Typing indicator
+  const typingDiv = document.createElement("div");
+  typingDiv.className = "bot-message typing";
+  typingDiv.innerText = "typing...";
+  chatBox.appendChild(typingDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  fetch("/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message })
+  })
     .then(res => res.json())
     .then(data => {
-        addMessage(data.reply, "bot-message");
+      chatBox.removeChild(typingDiv);
+
+      const botDiv = document.createElement("div");
+      botDiv.className = "bot-message";
+
+      if (data.learn_more) {
+        botDiv.innerHTML = `
+          ${data.reply}<br>
+          <a href="${data.learn_more}" target="_blank">🔗 Learn more</a>
+        `;
+      } else {
+        botDiv.innerText = data.reply;
+      }
+
+      chatBox.appendChild(botDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
     })
     .catch(() => {
-        addMessage("⚠️ Something went wrong. Please try again.", "bot-message");
+      chatBox.removeChild(typingDiv);
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "bot-message";
+      errorDiv.innerText = "Something went wrong. Please try again.";
+      chatBox.appendChild(errorDiv);
     });
 }
+

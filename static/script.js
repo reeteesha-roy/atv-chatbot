@@ -13,61 +13,24 @@ function quickAsk(text) {
 }
 
 function sendMessage() {
-  const input = document.getElementById("user-input");
-  const message = input.value.trim();
-  if (!message) return;
+    const input = document.getElementById("userInput");
+    const userText = input.value.trim();
 
-  const chatBox = document.getElementById("chat-box");
+    if (!userText) return;
 
-  // User message
-  const userDiv = document.createElement("div");
-  userDiv.className = "user-message";
-  userDiv.innerText = message;
-  chatBox.appendChild(userDiv);
+    addMessage(userText, "user-message");
+    input.value = "";
 
-  input.value = "";
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  // Typing indicator
-  const typingDiv = document.createElement("div");
-  typingDiv.className = "bot-message typing";
-  typingDiv.innerText = "typing...";
-  chatBox.appendChild(typingDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  fetch("/chat", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ message })
-  })
+    fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userText })
+    })
     .then(res => res.json())
     .then(data => {
-      chatBox.removeChild(typingDiv);
-
-      const botDiv = document.createElement("div");
-      botDiv.className = "bot-message";
-
-      if (data.learn_more) {
-        botDiv.innerHTML = `
-          ${data.reply}<br>
-          <a href="${data.learn_more}" target="_blank">🔗 Learn more</a>
-        `;
-      } else {
-        botDiv.innerText = data.reply;
-      }
-
-      chatBox.appendChild(botDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
+        addMessage(data.reply, "bot-message");
     })
     .catch(() => {
-      chatBox.removeChild(typingDiv);
-      const errorDiv = document.createElement("div");
-      errorDiv.className = "bot-message";
-      errorDiv.innerText = "Something went wrong. Please try again.";
-      chatBox.appendChild(errorDiv);
+        addMessage(" Something went wrong. Please try again.", "bot-message");
     });
 }
-
-

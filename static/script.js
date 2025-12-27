@@ -6,6 +6,12 @@ function addMessage(text, className) {
     chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
+
+function quickAsk(text) {
+  document.getElementById("user-input").value = text;
+  sendMessage();
+}
+
 function sendMessage() {
   const input = document.getElementById("user-input");
   const message = input.value.trim();
@@ -63,4 +69,5 @@ function sendMessage() {
       chatBox.appendChild(errorDiv);
     });
 }
+
 

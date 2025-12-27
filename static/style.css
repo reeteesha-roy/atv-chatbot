@@ -1,86 +1,45 @@
-{
-    box-sizing: border-box;
-}
-
 body {
     background: #0e0e0e;
     font-family: 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100dvh;
+    height: 100vh;
     margin: 0;
-    padding: 10px;
 }
-
 
 .chat-container {
-    width: 100%;
-    max-width: 420px;
-    height: 100%;
-    max-height: 650px;
+    width: 380px;
+    height: 550px;
     background: #1a1a1a;
-    border-radius: 14px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 24px rgba(128, 0, 32, 0.6);
-    overflow: hidden;
+    box-shadow: 0 0 20px rgba(128, 0, 32, 0.6);
 }
-
 
 .chat-header {
-    background: #800020;
+    background: #800020; /* wine red */
     color: white;
-    padding: 14px;
+    padding: 15px;
     text-align: center;
-    font-weight: 600;
+    font-weight: bold;
     font-size: 18px;
+    border-radius: 12px 12px 0 0;
 }
-
-
-.quick-buttons {
-    display: flex;
-    gap: 8px;
-    padding: 10px;
-    overflow-x: auto;
-    border-bottom: 1px solid #333;
-}
-
-.quick-buttons button {
-    background: #2b2b2b;
-    color: white;
-    border: 1px solid #444;
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.quick-buttons button:hover {
-    background: #800020;
-    border-color: #800020;
-}
-
 
 .chat-box {
     flex: 1;
-    padding: 14px;
+    padding: 15px;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
 }
 
-
-.bot-message,
-.user-message {
-    max-width: 85%;
+.bot-message, .user-message {
+    max-width: 80%;
     padding: 10px 14px;
     margin-bottom: 10px;
-    border-radius: 12px;
+    border-radius: 10px;
     line-height: 1.4;
-    font-size: 14px;
 }
 
 .bot-message {
@@ -93,25 +52,23 @@ body {
     background: #800020;
     color: white;
     align-self: flex-end;
+    margin-left: auto;
 }
-
 
 .chat-input {
     display: flex;
     padding: 10px;
     border-top: 1px solid #333;
-    gap: 8px;
 }
 
 .chat-input input {
     flex: 1;
-    padding: 10px 12px;
+    padding: 10px;
     background: #111;
-    border: 1px solid #333;
+    border: none;
     color: white;
-    border-radius: 8px;
+    border-radius: 6px;
     outline: none;
-    font-size: 14px;
 }
 
 .chat-input button {
@@ -119,20 +76,11 @@ body {
     border: none;
     color: white;
     padding: 10px 16px;
-    border-radius: 8px;
+    margin-left: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
-    transition: background 0.2s ease;
 }
 
 .chat-input button:hover {
     background: #a00028;
-}
-
-
-@media (max-width: 480px) {
-    .chat-container {
-        max-height: 100%;
-        border-radius: 10px;
-    }
 }

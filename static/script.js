@@ -7,11 +7,6 @@ function addMessage(text, className) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function quickAsk(text) {
-  document.getElementById("user-input").value = text;
-  sendMessage();
-}
-
 function sendMessage() {
     const input = document.getElementById("userInput");
     const userText = input.value.trim();
@@ -34,3 +29,4 @@ function sendMessage() {
         addMessage(" Something went wrong. Please try again.", "bot-message");
     });
 }
+

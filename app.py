@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from db import faq_collection
 from matcher import find_best_match
 import urllib.parse
@@ -8,11 +8,13 @@ app = Flask(__name__)
 CONFIDENCE_THRESHOLD = 0.25
 
 
+# 🔹 Serve the chatbot UI
 @app.route("/", methods=["GET"])
 def home():
-    return "🤖 ATV Support Chatbot backend is running."
+    return render_template("index.html")
 
 
+# 🔹 Chat API endpoint
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()

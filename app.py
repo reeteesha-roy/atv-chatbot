@@ -7,7 +7,7 @@ import os
 
 app = Flask(__name__)
 CORS(app)
-API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 
@@ -87,6 +87,7 @@ Answer (be concise and helpful):"""
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 

@@ -24,7 +24,7 @@ def get_context_from_db():
 
 @app.route("/", methods=["GET"])
 def home():
-    return send_file("index.html")
+    return render_template("index.html")
 
 
 @app.route("/chat", methods=["POST"])
@@ -87,6 +87,7 @@ Answer (be concise and helpful):"""
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from db import faq_collection
 from matcher import find_best_match
@@ -87,6 +87,7 @@ Answer (be concise and helpful):"""
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 

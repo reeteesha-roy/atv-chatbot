@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Configure Gemini API
-GEMINI_API_KEY = "AIzaSyBQIaBWcPw-WDEM_IY34Q9guuqXhdRQTUQ"  # Replace with your actual key
+  # Replace with your actual key
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 
@@ -96,3 +96,4 @@ Answer (be concise and helpful):"""
 
 if __name__ == "__main__":
     app.run(debug=True)
+

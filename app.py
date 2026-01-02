@@ -8,13 +8,10 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# Configure Gemini API
-  # Replace with your actual key
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 
-CONFIDENCE_THRESHOLD = 0.5  # Increased threshold
-
+CONFIDENCE_THRESHOLD = 0.5  
 
 def get_context_from_db():
     """Get all FAQs to provide context to Gemini"""
@@ -41,10 +38,8 @@ def chat():
             "category": "General"
         })
 
-    # First, try to find exact match in database
+  
     match, score = find_best_match(user_input, faq_collection)
-
-    # If high confidence match, use database answer
     if match and score >= CONFIDENCE_THRESHOLD:
         return jsonify({
             "answer": match["answer"],
@@ -53,14 +48,13 @@ def chat():
             "confidence": score
         })
     
-    # Otherwise, use Gemini with FAQ context
     try:
         context = get_context_from_db()
         
         prompt = f"""{context}
 You are an expert assistant for Team Garvit's ATV products and services.Based on the FAQ knowledge base above, please answer the following user question. If the answer is in the FAQ, provide that information. 
-If not, provide a helpful and informative response regarding this topic and suggest they contact support for specific details.
-
+If not, suggest they contact support for specific details.
+Do NOT use outside knowledge. Do NOT guess or assume.
 User Question: {user_input}
 
 Answer (be concise and helpful):"""
@@ -77,7 +71,6 @@ Answer (be concise and helpful):"""
     except Exception as e:
         print(f"Gemini API Error: {e}")
         
-        # Fallback to database answer if Gemini fails
         if match:
             return jsonify({
                 "answer": match["answer"],
@@ -85,8 +78,6 @@ Answer (be concise and helpful):"""
                 "source": "database_fallback",
                 "confidence": score
             })
-        
-        # Ultimate fallback
         return jsonify({
             "answer": "I'm having trouble processing your question right now. Please try rephrasing or contact our support team.",
             "category": "General",
@@ -96,4 +87,5 @@ Answer (be concise and helpful):"""
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 

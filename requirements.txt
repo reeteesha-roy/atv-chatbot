@@ -3,4 +3,3 @@ dnspython
 gunicorn
 flask
 flask-cors
-google-generativeai

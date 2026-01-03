@@ -1,391 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATV Support Chatbot</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<title>ATV Support Chatbot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+<style>
+body {
+  background: #0e0e0e;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
 
-        .header {
-            background: linear-gradient(135deg, #5e1818 0%, #a65b5b 100%);
-            color: rgb(255, 255, 255);
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(25, 1, 1, 0.3);
-        }
+.chat-container {
+  width: min(95%, 400px);
+  height: 90vh;
+  max-height: 600px;
+  background: #1a1a1a;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 25px rgba(128,0,32,0.6);
+}
 
-        .header-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+.chat-header {
+  background: #800020;
+  color: white;
+  padding: 14px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+}
 
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-        }
+.chat-box {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+}
 
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
+.bot-message, .user-message {
+  max-width: 80%;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  line-height: 1.4;
+  font-size: 14px;
+}
 
-        .chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #0a0101;
-        }
+.bot-message {
+  background: #2b2b2b;
+  color: #f2f2f2;
+}
 
-        .messages {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+.user-message {
+  background: #800020;
+  color: white;
+  margin-left: auto;
+}
 
-        .message {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 12px;
-            animation: slideIn 0.3s ease;
-        }
+.typing {
+  font-style: italic;
+  opacity: 0.7;
+}
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.chat-input {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #333;
+}
 
-        .message.user {
-            flex-direction: row-reverse;
-        }
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  background: #111;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  outline: none;
+}
 
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 18px;
-        }
+.chat-input button {
+  background: #800020;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  margin-left: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-        .bot-avatar {
-            background: #0f0000;
-        }
-
-        .user-avatar {
-            background: #060000;
-        }
-
-        .message-content {
-            max-width: 70%;
-            padding: 15px 20px;
-            border-radius: 18px;
-            line-height: 1.6;
-        }
-
-        .message.bot .message-content {
-            background: #370202;
-            color: white;
-            border: 1px solid #150202;
-            border-top-left-radius: 4px;
-        }
-
-        .message.user .message-content {
-            background: #571313;
-            color: white;
-            border-top-right-radius: 4px;
-        }
-
-        .message-content a {
-            color: #ff6b6b;
-            text-decoration: underline;
-        }
-
-        .loading {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .loading .message-content {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            padding: 15px 20px;
-            border-radius: 18px;
-            border-top-left-radius: 4px;
-        }
-
-        .loading-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .loading-dot {
-            width: 8px;
-            height: 8px;
-            background: #7d1e1e;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out;
-        }
-
-        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
-        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-
-        .input-area {
-            background: #1a1a1a;
-            border-top: 1px solid #333;
-            padding: 20px;
-        }
-
-        .input-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: flex;
-            gap: 12px;
-        }
-
-        #userInput {
-            flex: 1;
-            padding: 15px 20px;
-            background: #000;
-            color: white;
-            border: 1px solid #444;
-            border-radius: 25px;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        #userInput:focus {
-            border-color: #7d1e1e;
-        }
-
-        #sendBtn {
-            width: 50px;
-            height: 50px;
-            background: #7d1e1e;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            flex-shrink: 0;
-        }
-
-        #sendBtn:hover:not(:disabled) {
-            background: #5a1515;
-        }
-
-        #sendBtn:disabled {
-            background: #333;
-            cursor: not-allowed;
-        }
-
-        .input-hint {
-            text-align: center;
-            color: #666;
-            font-size: 12px;
-            margin-top: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 20px;
-            }
-
-            .message-content {
-                max-width: 85%;
-            }
-
-            .input-container {
-                gap: 8px;
-            }
-
-            #userInput {
-                font-size: 16px;
-            }
-        }
-    </style>
+.chat-input button:hover {
+  background: #a00028;
+}
+</style>
 </head>
+
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="avatar bot-avatar">💻</div>
-            <div>
-                <h1>ATV Support Chatbot</h1>
-                <p>Powered by AI • Ask me anything</p>
-            </div>
-        </div>
+
+<div class="chat-container">
+  <div class="chat-header">🤖 ATV Assistant</div>
+
+  <div id="chat-box" class="chat-box">
+    <div class="bot-message">
+      Hi! I’m here to help you with your ATV. What would you like to know?
     </div>
+  </div>
 
-    <div class="chat-container" id="chatContainer">
-        <div class="messages" id="messages"></div>
-    </div>
+  <div class="chat-input">
+    <input type="text" id="user-input" placeholder="Type your question…" onkeydown="handleEnter(event)">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
 
-    <div class="input-area">
-        <div class="input-container">
-            <input 
-                type="text" 
-                id="userInput" 
-                placeholder="Ask me anything about our ATV"
-                autocomplete="off"
-            >
-            <button id="sendBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                </svg>
-            </button>
-        </div>
-        <div class="input-hint">Press Enter to send your message</div>
-    </div>
+<script>
+const chatBox = document.getElementById("chat-box");
+const input = document.getElementById("user-input");
 
-    <script>
-        const API_ENDPOINT = '/chat';
-        
-        const messagesContainer = document.getElementById('messages');
-        const chatContainer = document.getElementById('chatContainer');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
-        
-        let isLoading = false;
+function addMessage(text, className) {
+  const div = document.createElement("div");
+  div.className = className;
+  div.innerHTML = text;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-        function init() {
-            addMessage('bot', 'Hi! I\'m your ATV support assistant. Ask me anything about ATV products, services, or support!');
-        }
+function showTyping() {
+  const div = document.createElement("div");
+  div.className = "bot-message typing";
+  div.id = "typing";
+  div.innerText = "Bot is typing...";
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-        function addMessage(type, content) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            
-            const avatar = document.createElement('div');
-            avatar.className = `avatar ${type}-avatar`;
-            avatar.textContent = type === 'bot' ? '💻' : '👤';
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            messageContent.innerHTML = content;
-            
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(messageContent);
-            messagesContainer.appendChild(messageDiv);
-            
-            scrollToBottom();
-        }
+function removeTyping() {
+  const typing = document.getElementById("typing");
+  if (typing) typing.remove();
+}
 
-        function showLoading() {
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'loading';
-            loadingDiv.id = 'loadingIndicator';
-            
-            const avatar = document.createElement('div');
-            avatar.className = 'avatar bot-avatar';
-            avatar.textContent = '💻';
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            
-            const dotsDiv = document.createElement('div');
-            dotsDiv.className = 'loading-dots';
-            dotsDiv.innerHTML = '<div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>';
-            
-            messageContent.appendChild(dotsDiv);
-            loadingDiv.appendChild(avatar);
-            loadingDiv.appendChild(messageContent);
-            messagesContainer.appendChild(loadingDiv);
-            
-            scrollToBottom();
-        }
+function sendMessage() {
+  const message = input.value.trim();
+  if (!message) return;
 
-        function hideLoading() {
-            const loading = document.getElementById('loadingIndicator');
-            if (loading) loading.remove();
-        }
+  addMessage(message, "user-message");
+  input.value = "";
 
-        function scrollToBottom() {
-            setTimeout(() => {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }, 100);
-        }
+  showTyping();
 
-        async function sendMessage() {
-            const message = userInput.value.trim();
-            if (!message || isLoading) return;
-            
-            addMessage('user', message);
-            userInput.value = '';
-            
-            isLoading = true;
-            sendBtn.disabled = true;
-            showLoading();
-            
-            try {
-                const response = await fetch(API_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ query: message })
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                
-                const data = await response.json();
-                
-                hideLoading();
-                addMessage('bot', data.answer);
-                
-            } catch (error) {
-                console.error('Error:', error);
-                hideLoading();
-                addMessage('bot', "Sorry, I'm having trouble connecting. Please try again in a moment.");
-            }
-            
-            isLoading = false;
-            sendBtn.disabled = false;
-            userInput.focus();
-        }
+  fetch("/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message })
+  })
+  .then(res => res.json())
+  .then(data => {
+    removeTyping();
+    addMessage(data.reply, "bot-message");
+    if (data.link) {
+      addMessage(`<a href="${data.link}" target="_blank">🔗 Learn more</a>`, "bot-message");
+    }
+  })
+  .catch(() => {
+    removeTyping();
+    addMessage("Something went wrong. Please try again.", "bot-message");
+  });
+}
 
-        sendBtn.addEventListener('click', sendMessage);
-        
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+function handleEnter(e) {
+  if (e.key === "Enter") sendMessage();
+}
+</script>
 
-        init();
-    </script>
 </body>
 </html>

@@ -1,15 +1,11 @@
-from pymongo import MongoClient
+from supabase import create_client
 import os
 
-MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-try:
-    client.admin.command("ping")
-    print("✅ MongoDB connected successfully")
-except Exception as e:
-    print("❌ MongoDB connection failed:", e)
-db = client["atv_chatbot"]
-faq_collection = db["faq"]
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-
+def get_faqs():
+    response = supabase.table("faq").select("*").execute()
+    return response.data

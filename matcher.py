@@ -6,18 +6,18 @@ def preprocess(text):
     return set(text.split())
 
 
-def find_best_match(user_query, faqs):  
+def find_best_match(user_query, faqs):
     user_words = preprocess(user_query)
 
     best_match = None
     best_score = 0
 
-    for doc in faqs: 
+    for doc in faqs:
         question_words = preprocess(doc["question"])
-
         common_words = user_words.intersection(question_words)
         score = len(common_words) / max(len(question_words), 1)
 
+        
         if score > best_score:
             best_score = score
             best_match = doc

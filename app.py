@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify, render_template
-from db import faq_collection
+from db import get_faqs
 from matcher import find_best_match
 import urllib.parse
 
 app = Flask(__name__)
 
-CONFIDENCE_THRESHOLD = 0.25
+CONFIDENCE_THRESHOLD = 0.1
 
 
 @app.route("/", methods=["GET"])
@@ -22,7 +22,14 @@ def chat():
 
     user_input = data["message"].strip()
 
-    match, score = find_best_match(user_input, faq_collection)
+   
+    faqs = get_faqs()
+    print("FAQs:", faqs)
+    for f in faqs:
+        print("DB QUESTION:", repr(f.get("question")))  
+
+    match, score = find_best_match(user_input, faqs)
+   
 
     if match and score >= CONFIDENCE_THRESHOLD:
         return jsonify({
@@ -31,9 +38,7 @@ def chat():
 
     query = urllib.parse.quote(user_input)
     return jsonify({
-        "reply": "I may not have the exact information for that.",
-        "link": f"https://www.google.com/search?q=ATV+{query}"
-    })
+    "reply": match.get("answer") or match.get("Answer") or "No answer found."})
 
 
 if __name__ == "__main__":
